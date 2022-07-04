@@ -3,20 +3,20 @@ import getOptionLabel from './getOptionLabel';
 import hasOwnProperty from './hasOwnProperty';
 import { isString } from './nodash';
 
-import { LabelKey, Option } from '../types';
+import { LabelKey, DefaultOption } from '../types';
 
-interface HintProps {
+interface HintProps<Option extends DefaultOption> {
   activeIndex: number;
   initialItem?: Option;
   isFocused: boolean;
   isMenuShown: boolean;
-  labelKey: LabelKey;
+  labelKey: LabelKey<Option>;
   multiple: boolean;
   selected: Option[];
   text: string;
 }
 
-function getHintText({
+function getHintText<Option extends DefaultOption>({
   activeIndex,
   initialItem,
   isFocused,
@@ -25,7 +25,7 @@ function getHintText({
   multiple,
   selected,
   text,
-}: HintProps) {
+}: HintProps<Option>) {
   // Don't display a hint under the following conditions:
   if (
     // No text entered.

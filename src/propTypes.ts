@@ -3,7 +3,7 @@ import { Requireable } from 'react';
 
 import { SIZES } from './constants';
 import { isFunction, warn } from './utils';
-import type { InputProps, TypeaheadProps } from './types';
+import type { DefaultOption, InputProps, TypeaheadProps } from './types';
 
 interface InputPropItem {
   alt: string;
@@ -19,7 +19,7 @@ const INPUT_PROPS_BLACKLIST: InputPropItem[] = [
 
 export const sizeType = PropTypes.oneOf(SIZES);
 
-type Props = TypeaheadProps;
+type Props = TypeaheadProps<DefaultOption>;
 type PropName = keyof Props;
 type Callback = (
   props: Props,

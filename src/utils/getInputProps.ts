@@ -2,10 +2,10 @@ import cx from 'classnames';
 
 import getMenuItemId from './getMenuItemId';
 import hasOwnProperty from './hasOwnProperty';
-import { TypeaheadManagerProps } from '../types';
+import { DefaultOption, TypeaheadManagerProps } from '../types';
 
 const getInputProps =
-  ({
+  <Option extends DefaultOption>({
     activeIndex,
     id,
     isFocused,
@@ -15,7 +15,7 @@ const getInputProps =
     onFocus,
     placeholder,
     ...rest
-  }: TypeaheadManagerProps) =>
+  }: TypeaheadManagerProps<Option>) =>
   (inputProps = {}) => {
     const className = hasOwnProperty(inputProps, 'className')
       ? inputProps.className

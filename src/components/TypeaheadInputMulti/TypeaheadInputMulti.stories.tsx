@@ -10,7 +10,7 @@ import TypeaheadInputMulti, {
 
 import options from '../../tests/data';
 import { HintProvider, noop } from '../../tests/helpers';
-import type { Size } from '../../types';
+import type { DefaultOption, Size } from '../../types';
 
 export default {
   title: 'Components/TypeaheadInputMulti',
@@ -28,7 +28,7 @@ const defaultProps = {
   selected,
 };
 
-interface Args extends TypeaheadInputMultiProps {
+interface Args extends TypeaheadInputMultiProps<DefaultOption> {
   hintText?: string;
   isValid?: boolean;
   isInvalid?: boolean;

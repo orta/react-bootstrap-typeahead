@@ -13,6 +13,7 @@ import {
   TypeaheadContext,
   TypeaheadContextType,
 } from '../core/Context';
+import { DefaultOption } from '../types';
 
 export { axe };
 export * from '@storybook/testing-react';
@@ -44,11 +45,11 @@ export function generateSnapshots(stories: StoriesImport) {
   });
 }
 
-interface HintProviderProps extends Partial<TypeaheadContextType> {
+interface HintProviderProps<Option extends DefaultOption> extends Partial<TypeaheadContextType<Option>> {
   children?: ReactNode;
 }
 
-export const HintProvider = ({ children, ...context }: HintProviderProps) => {
+export const HintProvider = <Option extends DefaultOption>({ children, ...context }: HintProviderProps<Option>) => {
   return (
     <TypeaheadContext.Provider
       value={{

@@ -11,7 +11,7 @@ import {
   isFunction,
   pick,
 } from '../utils';
-import { TypeaheadManagerProps } from '../types';
+import { DefaultOption, TypeaheadManagerProps } from '../types';
 
 const inputPropKeys = [
   'activeIndex',
@@ -27,7 +27,7 @@ const inputPropKeys = [
   'onFocus',
   'onKeyDown',
   'placeholder',
-] as (keyof TypeaheadManagerProps)[];
+] as (keyof TypeaheadManagerProps<DefaultOption>)[];
 
 const propKeys = [
   'activeIndex',
@@ -41,7 +41,7 @@ const propKeys = [
   'selected',
   'text',
   'toggleMenu',
-] as (keyof TypeaheadManagerProps)[];
+] as (keyof TypeaheadManagerProps<DefaultOption>)[];
 
 const contextKeys = [
   'activeIndex',
@@ -53,9 +53,9 @@ const contextKeys = [
   'onInitialItemChange',
   'onMenuItemClick',
   'setItem',
-] as (keyof TypeaheadManagerProps)[];
+] as (keyof TypeaheadManagerProps<DefaultOption>)[];
 
-const TypeaheadManager = (props: TypeaheadManagerProps) => {
+const TypeaheadManager = <Option extends DefaultOption>(props: TypeaheadManagerProps<Option>) => {
   const {
     allowNew,
     children,
@@ -105,11 +105,11 @@ const TypeaheadManager = (props: TypeaheadManagerProps) => {
     getInputProps: getInputProps({
       ...pick(props, inputPropKeys),
       onKeyDown: handleKeyDown,
-      value: getInputText(props),
+      value: getInputText<Option>(props),
     }),
   };
 
-  const contextValue: TypeaheadContextType = {
+  const contextValue: TypeaheadContextType<Option> = {
     ...pick(props, contextKeys),
     hintText,
     isOnlyResult: getIsOnlyResult(props),

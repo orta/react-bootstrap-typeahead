@@ -1,6 +1,6 @@
 import { DEFAULT_LABELKEY } from '../constants';
-import type { LabelKey } from '../types';
+import type { DefaultOption, LabelKey } from '../types';
 
-export default function getStringLabelKey(labelKey: LabelKey): string {
+export default function getStringLabelKey<Option extends DefaultOption>(labelKey: LabelKey<Option>): string {
   return typeof labelKey === 'string' ? labelKey : DEFAULT_LABELKEY;
 }

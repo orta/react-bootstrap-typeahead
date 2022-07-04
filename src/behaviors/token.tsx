@@ -14,15 +14,15 @@ import { useRootClose } from 'react-overlays';
 import { getDisplayName, isFunction } from '../utils';
 
 import { optionType } from '../propTypes';
-import { Option, OptionHandler, RefElement } from '../types';
+import { DefaultOption, OptionHandler, RefElement } from '../types';
 
-export interface UseTokenProps<T> extends Omit<HTMLProps<T>, 'onBlur'> {
+export interface UseTokenProps<T, Option extends DefaultOption> extends Omit<HTMLProps<T>, 'onBlur'> {
   // `onBlur` is typed more generically because it's passed to `useRootClose`,
   // which passes a generic event to the callback.
   onBlur?: (event: Event) => void;
   onClick?: MouseEventHandler<T>;
   onFocus?: FocusEventHandler<T>;
-  onRemove?: OptionHandler;
+  onRemove?: OptionHandler<Option>;
   option: Option;
 }
 
@@ -34,14 +34,14 @@ const propTypes = {
   option: optionType.isRequired,
 };
 
-export function useToken<T extends HTMLElement>({
+export function useToken<T extends HTMLElement, Option extends DefaultOption>({
   onBlur,
   onClick,
   onFocus,
   onRemove,
   option,
   ...props
-}: UseTokenProps<T>) {
+}: UseTokenProps<T, Option>) {
   const [active, setActive] = useState<boolean>(false);
   const [rootElement, attachRef] = useState<RefElement<T>>(null);
 
@@ -89,7 +89,7 @@ export function useToken<T extends HTMLElement>({
 }
 
 /* istanbul ignore next */
-export function withToken<T extends UseTokenProps<HTMLElement>>(
+export function withToken<T extends UseTokenProps<HTMLElement, DefaultOption>>(
   Component: ComponentType<T>
 ) {
   const displayName = `withToken(${getDisplayName(Component)})`;

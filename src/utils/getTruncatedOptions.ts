@@ -1,9 +1,9 @@
-import { Option } from '../types';
+import { DefaultOption } from '../types';
 
 /**
  * Truncates the result set based on `maxResults` and returns the new set.
  */
-function getTruncatedOptions(options: Option[], maxResults: number): Option[] {
+function getTruncatedOptions<Option extends DefaultOption>(options: Option[], maxResults: number): Option[] {
   if (!maxResults || maxResults >= options.length) {
     return options;
   }

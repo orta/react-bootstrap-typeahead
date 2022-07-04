@@ -11,6 +11,7 @@ import MenuItem from '../MenuItem';
 
 import options from '../../tests/data';
 import { noop } from '../../tests/helpers';
+import { DefaultOption } from '../../types';
 
 export default {
   title: 'Components/Typeahead',
@@ -53,7 +54,7 @@ const defaultProps = {
   positionFixed: true,
 };
 
-const Template: Story<TypeaheadComponentProps> = (args) => (
+const Template: Story<TypeaheadComponentProps<DefaultOption>> = (args) => (
   <Typeahead {...args} />
 );
 
@@ -138,7 +139,7 @@ CustomMenu.args = {
   ),
 };
 
-export const InputGrouping = (args: TypeaheadComponentProps) => (
+export const InputGrouping = (args: TypeaheadComponentProps<DefaultOption>) => (
   <div
     className={cx('input-group', {
       'input-group-sm': args.size === 'sm',
@@ -153,7 +154,7 @@ InputGrouping.args = {
   ...defaultProps,
 };
 
-export const Controlled = (args: TypeaheadComponentProps) => {
+export const Controlled = (args: TypeaheadComponentProps<DefaultOption>) => {
   const [selected, setSelected] = useState(args.selected || []);
 
   return <Typeahead {...args} onChange={setSelected} selected={selected} />;

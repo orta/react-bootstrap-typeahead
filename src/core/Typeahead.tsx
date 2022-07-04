@@ -43,7 +43,7 @@ import { DEFAULT_LABELKEY } from '../constants';
 
 import type {
   FilterByCallback,
-  Option,
+  DefaultOption,
   RefElement,
   SelectEvent,
   TypeaheadProps,
@@ -207,9 +207,9 @@ const defaultProps = {
   paginate: true,
 };
 
-type Props = TypeaheadProps;
+type Props<T extends DefaultOption> = TypeaheadProps<T>;
 
-export function getInitialState(props: Props): TypeaheadState {
+export function getInitialState<Options extends DefaultOption>(props: Props<Options>): TypeaheadState<Options> {
   const {
     defaultInputValue,
     defaultOpen,
@@ -246,7 +246,7 @@ export function getInitialState(props: Props): TypeaheadState {
   };
 }
 
-export function clearTypeahead(state: TypeaheadState, props: Props) {
+export function clearTypeahead<Option extends DefaultOption>(state: TypeaheadState<Option>, props: Props<Option>) {
   return {
     ...getInitialState(props),
     isFocused: state.isFocused,
@@ -255,7 +255,7 @@ export function clearTypeahead(state: TypeaheadState, props: Props) {
   };
 }
 
-export function clickOrFocusInput(state: TypeaheadState) {
+export function clickOrFocusInput<Option extends DefaultOption>(state: TypeaheadState<Option>) {
   return {
     ...state,
     isFocused: true,
@@ -263,7 +263,7 @@ export function clickOrFocusInput(state: TypeaheadState) {
   };
 }
 
-export function hideMenu(state: TypeaheadState, props: Props) {
+export function hideMenu<Option extends DefaultOption>(state: TypeaheadState<Option>, props: Props<Option>) {
   const { activeIndex, activeItem, initialItem, shownResults } =
     getInitialState(props);
 
@@ -277,7 +277,7 @@ export function hideMenu(state: TypeaheadState, props: Props) {
   };
 }
 
-export function toggleMenu(state: TypeaheadState, props: Props) {
+export function toggleMenu<Option extends DefaultOption>(state: TypeaheadState<Option>, props: Props<Option>) {
   return state.showMenu ? hideMenu(state, props) : { ...state, showMenu: true };
 }
 
@@ -296,7 +296,7 @@ function triggerInputChange(input: HTMLInputElement, value: string) {
   input.dispatchEvent(e);
 }
 
-class Typeahead extends React.Component<Props, TypeaheadState> {
+class Typeahead<Option extends DefaultOption> extends React.Component<Props<Option>, TypeaheadState<Option>> {
   static propTypes = propTypes;
   static defaultProps = defaultProps;
 
@@ -312,7 +312,7 @@ class Typeahead extends React.Component<Props, TypeaheadState> {
     this.props.autoFocus && this.focus();
   }
 
-  componentDidUpdate(prevProps: Props, prevState: TypeaheadState) {
+  componentDidUpdate(prevProps: Props<Option>, prevState: TypeaheadState<Option>) {
     const { labelKey, multiple, selected } = this.props;
 
     validateSelectedPropChange(selected, prevProps.selected);
@@ -323,7 +323,7 @@ class Typeahead extends React.Component<Props, TypeaheadState> {
 
       if (!multiple) {
         this.setState({
-          text: selected.length ? getOptionLabel(selected[0], labelKey) : '',
+          text: selected.length ? getOptionLabel<Option>(selected[0], labelKey) : '',
         });
       }
     }
@@ -339,12 +339,12 @@ class Typeahead extends React.Component<Props, TypeaheadState> {
     this.isMenuShown = isShown(mergedPropsAndState);
     this.items = []; // Reset items on re-render.
 
-    let results: Option[] = [];
+    let results: Array<Option |any> = [];
 
     if (this.isMenuShown) {
       const cb = (
         isFunction(filterBy) ? filterBy : defaultFilterBy
-      ) as FilterByCallback;
+      ) as FilterByCallback<Option>;
 
       results = options.filter((option: Option) =>
         cb(option, mergedPropsAndState)
@@ -354,20 +354,20 @@ class Typeahead extends React.Component<Props, TypeaheadState> {
       const shouldPaginate = paginate && results.length > shownResults;
 
       // Truncate results if necessary.
-      results = getTruncatedOptions(results, shownResults);
+      results = getTruncatedOptions<Option>(results, shownResults);
 
       // Add the custom option if necessary.
-      if (addCustomOption(results, mergedPropsAndState)) {
+      if (addCustomOption<Option>(results, mergedPropsAndState)) {
         results.push({
           customOption: true,
-          [getStringLabelKey(labelKey)]: text,
+          [getStringLabelKey<Option>(labelKey)]: text,
         });
       }
 
       // Add the pagination item if necessary.
       if (shouldPaginate) {
         results.push({
-          [getStringLabelKey(labelKey)]: '',
+          [getStringLabelKey<Option>(labelKey)]: '',
           paginationOption: true,
         });
       }
@@ -433,7 +433,7 @@ class Typeahead extends React.Component<Props, TypeaheadState> {
   };
 
   _handleActiveIndexChange = (activeIndex: number) => {
-    this.setState((state: TypeaheadState) => ({
+    this.setState((state: TypeaheadState<Option>) => ({
       activeIndex,
       activeItem: activeIndex >= 0 ? state.activeItem : undefined,
     }));
@@ -583,6 +583,7 @@ class Typeahead extends React.Component<Props, TypeaheadState> {
     // Add a unique id to the custom selection. Avoid doing this in `render` so
     // the id doesn't increment every time.
     if (!isString(selection) && selection.customOption) {
+      // @ts-expect-error We are sure this is not a string!
       selection = { ...selection, id: uniqueId('new-id-') };
     }
 
